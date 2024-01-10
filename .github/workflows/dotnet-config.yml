@@ -1,0 +1,14 @@
+name: shared config
+
+on:
+  workflow_dispatch:
+
+jobs:
+  config:
+    name: Generate config
+    runs-on: ubuntu-latest
+   outputs:
+     runner: ubuntu-latest
+     dotnet-version: 8.0.x
+     bin-debug: ${{ github.workspace}}/App/bin/Debug/net8.0/win-x64
+     bin-release: ${{ github.workspace}}/App/bin/Release/net8.0/win-x64

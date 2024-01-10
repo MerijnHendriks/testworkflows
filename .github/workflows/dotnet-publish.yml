@@ -1,0 +1,38 @@
+name: dotnet publish
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+
+jobs:
+  publish:
+    name: Publish
+    needs: [.github/workflows/dotnet-config, .github/workflows/dotnet-build-release.yml]
+    runs-on: ${{ needs.dotnet-config.outputs.runner }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ needs.dotnet-config.outputs.dotnet-version }}
+
+    - name: Download release artifact
+      uses: actions/download-artifact@v4
+        with:
+          name: release
+          path: ${{ needs.dotnet-config.outputs.bin-release }}
+
+    - name: Publish
+      run: dotnet publish --nologo --no-build
